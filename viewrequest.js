@@ -19,7 +19,7 @@ import Typography from "@material-ui/core/Typography";
 import Button from '@material-ui/core/Button'
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
-import './viewrequest.css'
+import './viewpolicyholders.css'
 const actionsStyles = theme => ({
     root: {
         flexShrink: 0,
@@ -42,7 +42,7 @@ const CustomTableCell=  withStyles(theme => ({
 
 
 
-const apiUrl = 'http://visaapp.us-east-1.elasticbeanstalk.com';
+const apiUrl = 'http://insapp2019.ap-south-1.elasticbeanstalk.com/';
 
 
 class TablePaginationActions extends React.Component {
@@ -130,14 +130,14 @@ const TablePaginationActionsWrapped = withStyles(actionsStyles, { withTheme: tru
 
 
 
-export class ViewRequest extends Component
+export class ViewPolicyHolders extends Component
 {
 
     constructor(props)
     {
         super(props);
         this.state={
-            applications:[],
+            policyholders:[],
             page: 0,
             rowsPerPage: 5,
         }
@@ -147,11 +147,11 @@ export class ViewRequest extends Component
     componentDidMount()
     {
 
-        axios.get(`${apiUrl}/getvisa`)
+        axios.get(`${apiUrl}/getallPolicyHolders`)
             .then(response => {
                     console.log(response.data);
                     this.setState({
-                        applications: response.data
+                        policyholders: response.data
                     })
                 }
             )
@@ -188,13 +188,13 @@ export class ViewRequest extends Component
     render()
     {
       //  const { classes, count,  theme } = this.props;
-        const { applications, rowsPerPage, page } = this.state;
-        const emptyRows = rowsPerPage - Math.min(rowsPerPage, this.state.applications.length - page * rowsPerPage);
+        const { policyholders, rowsPerPage, page } = this.state;
+        const emptyRows = rowsPerPage - Math.min(rowsPerPage, this.state.policyholders.length - page * rowsPerPage);
         return(
             <Paper className="paper">
 
                         <Typography variant="h6" color="inherit">
-                            Online Visa Applications Received
+                            Policy Holder Data
                         </Typography>
 
 
@@ -205,7 +205,7 @@ export class ViewRequest extends Component
                <TableHead>
                    <TableRow>
                   <CustomTableCell>
-                      Application No
+                      Aadhar Card No
                   </CustomTableCell>
                        <CustomTableCell>
                            First Name
@@ -216,6 +216,9 @@ export class ViewRequest extends Component
                        <CustomTableCell>
                            Email
                        </CustomTableCell>
+                        <CustomTableCell>
+                        Mobile No
+                        </CustomTableCell>
                        <CustomTableCell>
                            Edit
                        </CustomTableCell>
@@ -227,27 +230,30 @@ export class ViewRequest extends Component
 
                <TableBody>
                    {
-                       this.state.applications.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(application=>(
-                          <TableRow key={application.applicationNo}>
+                       this.state.policyholders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(policy=>(
+                          <TableRow key={policy.adharCardNo}>
                               <CustomTableCell>
-                                  {application.applicationNo}
+                                  {policy.adharCardNo}
                               </CustomTableCell>
                                <CustomTableCell>
-                                   {application.firstName}
+                                   {policy.firstName}
                                </CustomTableCell>
                               <CustomTableCell>
-                                  {application.lastName}
+                                  {policy.lastName}
                               </CustomTableCell>
                               <CustomTableCell>
-                                  {application.email}
+                                  {policy.email}
                               </CustomTableCell>
+                       <CustomTableCell>
+                       {policy.mobileNo}
+                       </CustomTableCell>
                               <CustomTableCell>
                                   <Button>
                                    <EditIcon/>
                                   </Button>
                               </CustomTableCell>
                               <CustomTableCell>
-                                  <Button onClick={()=>{this.deleteVisa(application)}}>
+                                  <Button >
                                   <DeleteIcon/>
                                   </Button>
                               </CustomTableCell>
@@ -270,7 +276,7 @@ export class ViewRequest extends Component
                        <TablePagination
                            rowsPerPageOptions={[5, 10, 25]}
                            colSpan={3}
-                           count={applications.length}
+                           count={policyholders.length}
                            rowsPerPage={rowsPerPage}
                            page={page}
                            SelectProps={{
